@@ -15,7 +15,9 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const BACKEND_URL = process.env.BACKEND_URL || "https://sentinelai-h62a.onrender.com";
 const FRONTEND_URL = process.env.FRONTEND_URL || "https://sentinel-ai-yqna.vercel.app";
-const HF_URL = process.env.HF_URL || "https://router.huggingface.co/hf-inference/models/protectai/deberta-v3-base-prompt-injection";
+const HF_URL = process.env.HF_URL || "const HF_URL = process.env.HF_URL || 
+"https://api-inference.huggingface.co/models/protectai/deberta-v3-base-prompt-injection";
+";
 const HF_API_KEY = process.env.HF_API_KEY;
 
 // ==================== SECURITY MIDDLEWARE ====================
