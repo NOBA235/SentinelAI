@@ -562,3 +562,144 @@
                 border: 2px solid #fff;
             }
         }
+
+ /* Loading Screen Styles */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0b111e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
+
+.loading-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loader-card {
+    background: #131f30;
+    padding: 3rem 4rem;
+    border-radius: 2.5rem;
+    border: 1px solid #2c405a;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    animation: floatAnimation 2s ease-in-out infinite;
+}
+
+.loader-card i {
+    font-size: 4.5rem;
+    color: #4e9eff;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 20px rgba(78, 158, 255, 0.3);
+}
+
+.loader-card h2 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+
+.loader-card p {
+    color: #9fb0d1;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.spinner-big {
+    width: 4rem;
+    height: 4rem;
+    border: 3px solid #2a3f5a;
+    border-top: 3px solid #4e9eff;
+    border-right: 3px solid #4e9eff;
+    border-radius: 50%;
+    margin: 1.5rem auto;
+    animation: spinAnimation 1s linear infinite;
+}
+
+.loading-status {
+    font-size: 0.9rem !important;
+    color: #7d90b5 !important;
+    margin-top: 1.5rem;
+    font-weight: 400;
+}
+
+@keyframes floatAnimation {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes spinAnimation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Main app initial state */
+.app {
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+}
+
+.app.visible {
+    opacity: 1;
+}
+
+/* Responsive loading screen */
+@media (max-width: 768px) {
+    .loader-card {
+        padding: 2rem 2.5rem;
+        margin: 0 1rem;
+    }
+    
+    .loader-card i {
+        font-size: 3.5rem;
+    }
+    
+    .loader-card h2 {
+        font-size: 1.8rem;
+    }
+    
+    .loader-card p {
+        font-size: 1rem;
+    }
+    
+    .spinner-big {
+        width: 3rem;
+        height: 3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .loader-card {
+        padding: 1.5rem 2rem;
+    }
+    
+    .loader-card i {
+        font-size: 3rem;
+    }
+    
+    .loader-card h2 {
+        font-size: 1.5rem;
+    }
+}       
+
