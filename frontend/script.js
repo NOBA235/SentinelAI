@@ -437,3 +437,169 @@ if (document.readyState === 'loading') {
 } else {
     init();
 }
+
+/**
+ * SentinelAI Loading Screen Controller
+ * Manages the initial loading screen display and transition
+ */
+
+(function() {
+    'use strict';
+
+    // Configuration
+    const LOADING_CONFIG = {
+        MIN_DISPLAY_TIME: 1500,        // Minimum time to show loading screen (ms)
+        FADE_OUT_TIME: 500,             // Fade out transition time (ms)
+        INITIAL_SCAN_DELAY: 300         // Delay before initial scan after app appears
+    };
+
+    // Track loading start time
+    const loadingStartTime = Date.now();
+
+    /**
+     * Hide loading overlay and show main app
+     */
+    function showApplication() {
+        const overlay = document.getElementById('loadingOverlay');
+        const mainApp = document.getElementById('mainApp');
+        
+        if (!overlay || !mainApp) {
+            console.error('Loading overlay or main app element not found');
+            return;
+        }
+
+        // Calculate how long we've already shown the loading screen
+        const elapsedTime = Date.now() - loadingStartTime;
+        const remainingTime = Math.max(0, LOADING_CONFIG.MIN_DISPLAY_TIME - elapsedTime);
+
+        // Ensure minimum display time
+        setTimeout(() => {
+            // Hide loading overlay
+            overlay.classList.add('hidden');
+            
+            // Show main app with fade effect
+            mainApp.classList.add('visible');
+            
+            // Announce for screen readers
+            announceAppReady();
+            
+            // Trigger initial security scan
+            triggerInitialScan();
+            
+        }, remainingTime);
+    }
+
+    /**
+     * Announce app readiness for screen readers
+     */
+    function announceAppReady() {
+        const announcer = document.getElementById('analysisAnnouncer');
+        if (announcer) {
+            announcer.textContent = 'SentinelAI is ready. You can enter a prompt for security analysis.';
+            
+            // Clear the announcement after it's been read
+            setTimeout(() => {
+                announcer.textContent = '';
+            }, 1000);
+        }
+    }
+
+    /**
+     * Trigger initial security scan on default prompt
+     */
+    function triggerInitialScan() {
+        // Small delay to ensure all event listeners are attached
+        setTimeout(() => {
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const promptInput = document.getElementById('promptInput');
+            
+            if (analyzeBtn && promptInput && promptInput.value.trim()) {
+                // Trigger click event on analyze button
+                analyzeBtn.click();
+                
+                // Show toast notification that initial scan completed
+                showInitialScanToast();
+            }
+        }, LOADING_CONFIG.INITIAL_SCAN_DELAY);
+    }
+
+    /**
+     * Show toast notification for initial scan
+     */
+    function showInitialScanToast() {
+        const toastContainer = document.getElementById('toastContainer');
+        if (!toastContainer) return;
+
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = '<i class="fas fa-info-circle"></i> Initial security scan complete';
+        toast.style.borderLeftColor = '#4e9eff';
+        toast.style.background = '#1a2a3a';
+        
+        toastContainer.appendChild(toast);
+        
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 3000);
+    }
+
+    /**
+     * Handle errors during loading
+     */
+    function handleLoadingError(error) {
+        console.error('Loading error:', error);
+        
+        // Force show app even if there's an error
+        const overlay = document.getElementById('loadingOverlay');
+        const mainApp = document.getElementById('mainApp');
+        
+        if (overlay) overlay.classList.add('hidden');
+        if (mainApp) mainApp.classList.add('visible');
+        
+        // Show error toast
+        const toastContainer = document.getElementById('toastContainer');
+        if (toastContainer) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = 'Application loaded with limited functionality';
+            toast.style.borderLeftColor = '#f39c12';
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 4000);
+        }
+    }
+
+    /**
+     * Initialize loading screen
+     */
+    function initLoadingScreen() {
+        try {
+            // Check if page is already loaded
+            if (document.readyState === 'complete') {
+                showApplication();
+            } else {
+                // Wait for page to fully load
+                window.addEventListener('load', showApplication);
+            }
+            
+            // Fallback: Force show app after 6 seconds even if load event doesn't fire
+            setTimeout(() => {
+                const overlay = document.getElementById('loadingOverlay');
+                const mainApp = document.getElementById('mainApp');
+                
+                if (overlay && !overlay.classList.contains('hidden')) {
+                    console.warn('Fallback: Force showing application');
+                    showApplication();
+                }
+            }, 6000);
+            
+        } catch (error) {
+            handleLoadingError(error);
+        }
+    }
+
+    // Start the loading screen
+    initLoadingScreen();
+})();
